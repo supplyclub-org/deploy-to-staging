@@ -6,6 +6,17 @@ on:
       plugin_slug:
         required: true
         type: string
+    secrets:
+      STAGING_HOST:
+        required: true
+      STAGING_PORT:
+        required: true
+      STAGING_USERNAME:
+        required: true
+      STAGING_PASSWORD:
+        required: true
+      STAGING_PATH:
+        required: true
 
 jobs:
   deploy:
@@ -27,11 +38,14 @@ jobs:
       - name: PHP Syntax Check
         run: find . -name "*.php" -print0 | xargs -0 -n1 php -l
 
+      - name: Echo deploy path (for debugging)
+        run: echo "Deploying to: ${{ secrets.STAGING_PATH }}/${{ inputs.plugin_slug }}"
+
       - name: Deploy to Staging via SFTP
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
           server: ${{ secrets.STAGING_HOST }}
-          port: 65101
+          port: ${{ secrets.STAGING_PORT }}
           username: ${{ secrets.STAGING_USERNAME }}
           password: ${{ secrets.STAGING_PASSWORD }}
           local_path: './*'
