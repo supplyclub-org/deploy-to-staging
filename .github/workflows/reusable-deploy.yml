@@ -1,4 +1,4 @@
-name: Reusable Plugin Deploy to Staging (SFTP)
+name: Reusable Plugin Deploy to Staging
 
 on:
   workflow_call:
