@@ -31,7 +31,7 @@ jobs:
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
           server: ${{ secrets.STAGING_HOST }}
-          port: ${{ secrets.STAGING_PORT }}
+          port: 65101
           username: ${{ secrets.STAGING_USERNAME }}
           password: ${{ secrets.STAGING_PASSWORD }}
           local_path: './*'
