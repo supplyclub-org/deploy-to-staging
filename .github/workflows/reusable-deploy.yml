@@ -1,0 +1,40 @@
+name: Reusable Plugin Deploy to Staging (SFTP)
+
+on:
+  workflow_call:
+    inputs:
+      plugin_slug:
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: staging-deploy
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: PHP Syntax Check
+        run: find . -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Deploy to Staging via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          server: ${{ secrets.STAGING_HOST }}
+          port: ${{ secrets.STAGING_PORT }}
+          username: ${{ secrets.STAGING_USERNAME }}
+          password: ${{ secrets.STAGING_PASSWORD }}
+          local_path: './*'
+          remote_path: ${{ secrets.STAGING_PATH }}/${{ inputs.plugin_slug }}
+          sftpArgs: '-o StrictHostKeyChecking=no'
+          delete_remote_files: false
